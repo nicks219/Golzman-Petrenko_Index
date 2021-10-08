@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace TMG3DotNetCore
 {
@@ -7,27 +9,37 @@ namespace TMG3DotNetCore
     {
         private static readonly string _russian = "01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ";
         private static readonly string _english = "0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP";
-        private static readonly Dictionary<float, List<string>> _dict = new Dictionary<float, List<string>>();
+        private static readonly Dictionary<float, List<string>> _dict = new();
+        private static readonly UTF8Encoding _uniEncoding = new();
+        private static readonly HashSet<float> _identical = new();
 
         static void Main(string[] args)
         {
-            string[] test = new[] { "Не выходи из комнаты, не совершай ошибку.",
-                "Load up on guns and bring your friends. It' |    !!!",
-                "Hello, how low | Nirvana" };
-            CreateIndexes(test);
-            PrintIdeticalIndexes();
+            byte[] firstString = _uniEncoding.GetBytes(
+            "Не выходи из комнаты, не совершай ошибку.\n" +
+            "Load up on guns and bring your friends. It' |    !!!\n" +
+            "Hello, how low | Nirvana");
+            using Stream stream = new MemoryStream(100);
+            stream.Write(firstString, 0, firstString.Length);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            CreateIndexes(stream);
+            FindIdenticalIndexes();
+            PrintIdenticalPhrases();
         }
 
-         public static void CreateIndexes(string[] test)
+         public static void CreateIndexes(Stream stream)
         {
-            float acc;
-            foreach (var phrase in test)
+            using var streamReader = new StreamReader(stream);
+            string phrase;
+            while ((phrase = streamReader.ReadLine()) != null)
             {
+                float acc;
                 string[] res = phrase.Split('|');
                 acc = CalculatePetrenkoIndex(res[0]);
                 if (res.Length == 2)
                 {
-                    //English: add comments
+                    //English phrase: add comments
                     acc += CalculatePetrenkoIndex(res[1]);
                 }
 
@@ -39,23 +51,32 @@ namespace TMG3DotNetCore
                 {
                     _dict.Add(acc, new List<string> { phrase });
                 }
-
             }
+            Console.WriteLine();
         }
 
-        public static void PrintIdeticalIndexes()
+        public static void FindIdenticalIndexes()
         {
+            _identical.Clear();
             foreach(var index in _dict)
             {
                 if (index.Value.Count > 1)
                 {
-                    Console.WriteLine(index.Key);
-                    foreach(var phrase in index.Value)
-                    {
-                        Console.WriteLine(phrase);
-                    }
-                    Console.WriteLine("\n");
+                    _identical.Add(index.Key);
                 }
+            }
+        }
+
+        public static void PrintIdenticalPhrases()
+        {
+            foreach (var index in _identical)
+            {
+                Console.WriteLine(index);
+                foreach (var phrase in _dict[index])
+                {
+                    Console.WriteLine(phrase);
+                }
+                Console.WriteLine("\n");
             }
         }
 
