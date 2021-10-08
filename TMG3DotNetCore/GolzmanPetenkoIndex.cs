@@ -5,17 +5,17 @@ namespace TMG3DotNetCore
 {
     public class GolzmanPetenkoIndex
     {
-        private static readonly string _russian = "01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ";
-        private static readonly string _english = "0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP";
         private readonly Dictionary<float, List<string>> _dict = new();
         private readonly HashSet<float> _identicalIndexes = new();
+        private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
+        private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
 
         public GolzmanPetenkoIndex(Stream stream)
         {
             CreateIndexes(stream);
         }
 
-        public HashSet<float> GetIdenticalIndexes()
+        public HashSet<float> CreateIdenticalIndexes()
         {
             _identicalIndexes.Clear();
             foreach (var index in _dict)
@@ -32,7 +32,7 @@ namespace TMG3DotNetCore
         {
             if (_identicalIndexes.Count == 0)
             {
-                GetIdenticalIndexes();
+                CreateIdenticalIndexes();
             }
 
             List<string> result = new();
@@ -79,9 +79,7 @@ namespace TMG3DotNetCore
             int length = 0;
             foreach (var r in input)
             {
-                bool letterOrDigitRussian = _russian.IndexOf(r) != -1;
-                bool letterOrDigitEnglish = _english.IndexOf(r) != -1;
-                if (letterOrDigitRussian || letterOrDigitEnglish)
+                if (_russian.Contains(r) || _english.Contains(r))
                 {
                     accumulator += index;
                     index++;
