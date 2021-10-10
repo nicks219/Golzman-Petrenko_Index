@@ -4,14 +4,6 @@ using System.Linq;
 
 namespace TMG3DotNetCore
 {
-    public class a
-    {
-        public a()
-        {
-            GolzmanPetenkoIndex r = new GolzmanPetenkoIndex(new MemoryStream(90));
-            r.IdenticalIndices.Add(10f);
-        }
-    }
     public class GolzmanPetenkoIndex
     {
         public HashSet<float> IdenticalIndices { get; private set; }
