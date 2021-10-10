@@ -14,7 +14,7 @@ namespace TMG3DotNetCore
         public GolzmanPetenkoIndex(Stream stream)
         {
             InitializeAllIndices(stream);
-            CreateIdenticalIndices();
+            InitializeIdenticalIndices();
         }
 
         /// <summary>
@@ -23,11 +23,6 @@ namespace TMG3DotNetCore
         /// <returns>Dictionary of the identical indices and lines</returns>
         public Dictionary<float, List<string>> GetIdenticalPhrases()
         {
-            if (IdenticalIndices.Count == 0)
-            {
-                CreateIdenticalIndices();
-            }
-
             var repetitionDict = new Dictionary<float, List<string>>();
             List<string> lines = new();
             foreach (var index in IdenticalIndices)
@@ -85,7 +80,7 @@ namespace TMG3DotNetCore
             return accumulator;
         }
 
-        private void CreateIdenticalIndices()
+        private void InitializeIdenticalIndices()
         {
             _generalDict.Where(data => data.Value.Count > 1)
                 .Select(data => IdenticalIndices
