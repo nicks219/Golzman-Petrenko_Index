@@ -17,9 +17,9 @@ namespace PetrenkoTest
         [Test]
         public void TestUsingTxtFile()
         {
-            GolzmanPetenkoIndex golzmanPetenkoIndex = BuildIndexes("test.txt");
+            GolzmanPetenkoIndex golzmanPetenkoIndex = BuildIndices("test.txt");
 
-            Assert.IsTrue(golzmanPetenkoIndex.CreateIdenticalIndexes().Contains(17968.5f));
+            Assert.IsTrue(golzmanPetenkoIndex.CreateIdenticalIndices().Contains(17968.5f));
             Assert.AreEqual(2, golzmanPetenkoIndex.GetIdenticalPhrases().Count);
             Assert.AreEqual("Не выходи из комнаты, не совершай ошибку.", golzmanPetenkoIndex.GetIdenticalPhrases()[0]);
             Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases()[1]);
@@ -33,15 +33,15 @@ namespace PetrenkoTest
         }
 
 
-        private GolzmanPetenkoIndex BuildIndexes(string fileName)
+        private GolzmanPetenkoIndex BuildIndices(string fileName)
         {
             var type = GetType();
             var path = type.FullName!.Replace(nameof(Tests), $"TestData.{fileName}");
-            using (var stream = type.Assembly.GetManifestResourceStream(path))
-                return new GolzmanPetenkoIndex(stream);
+            using var stream = type.Assembly.GetManifestResourceStream(path);
+            return new GolzmanPetenkoIndex(stream);
         }
 
-        private GolzmanPetenkoIndex BuildMemoryStream()
+        private static GolzmanPetenkoIndex BuildMemoryStream()
         {
             byte[] firstString = _uniEncoding.GetBytes(
            "Не выходи из комнаты, не совершай ошибку.\n" +

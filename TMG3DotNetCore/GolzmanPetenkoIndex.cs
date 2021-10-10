@@ -6,73 +6,77 @@ namespace TMG3DotNetCore
     public class GolzmanPetenkoIndex
     {
         private readonly Dictionary<float, List<string>> _dict = new();
-        private readonly HashSet<float> _identicalIndexes = new();
+        private readonly HashSet<float> _identicalIndices = new();
         private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
         private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
 
         public GolzmanPetenkoIndex(Stream stream)
         {
-            CreateIndexes(stream);
+            CreateIndices(stream);
         }
 
-        public HashSet<float> CreateIdenticalIndexes()
+        public HashSet<float> CreateIdenticalIndices()
         {
-            _identicalIndexes.Clear();
-            foreach (var index in _dict)
+            _identicalIndices.Clear();
+            foreach (var data in _dict)
             {
-                if (index.Value.Count > 1)
+                if (data.Value.Count > 1)
                 {
-                    _identicalIndexes.Add(index.Key);
+                    _identicalIndices.Add(data.Key);
                 }
             }
-            return _identicalIndexes;
+            return _identicalIndices;
         }
 
+        /// <summary>
+        /// Gets a list of lines with the same indices
+        /// </summary>
+        /// <returns>List of lines</returns>
         public List<string> GetIdenticalPhrases()
         {
-            if (_identicalIndexes.Count == 0)
+            if (_identicalIndices.Count == 0)
             {
-                CreateIdenticalIndexes();
+                CreateIdenticalIndices();
             }
 
             List<string> result = new();
-            foreach (var index in _identicalIndexes)
+            foreach (var index in _identicalIndices)
             {
-                foreach (var phrase in _dict[index])
+                foreach (var line in _dict[index])
                 {
-                    result.Add(phrase);
+                    result.Add(line);
                 }
             }
             return result;
         }
 
-        private void CreateIndexes(Stream stream)
+        private void CreateIndices(Stream stream)
         {
             using var streamReader = new StreamReader(stream);
-            string phrase;
-            while ((phrase = streamReader.ReadLine()) != null)
+            string line;
+            while ((line = streamReader.ReadLine()) != null)
             {
-                float acc;
-                string[] res = phrase.Split('|');
-                acc = CalculatePetrenkoIndex(res[0]);
+                float index;
+                string[] res = line.Split('|');
+                index = CalculatePetrenkoIndex(res[0]);
                 if (res.Length == 2)
                 {
-                    //English phrase: add comments
-                    acc += CalculatePetrenkoIndex(res[1]);
+                    //English phrase: adds comment index
+                    index += CalculatePetrenkoIndex(res[1]);
                 }
 
-                if (_dict.TryGetValue(acc, out var list))
+                if (_dict.TryGetValue(index, out var list))
                 {
-                    list.Add(phrase);
+                    list.Add(line);
                 }
                 else
                 {
-                    _dict.Add(acc, new List<string> { phrase });
+                    _dict.Add(index, new List<string> { line });
                 }
             }
         }
 
-        private float CalculatePetrenkoIndex(string input)
+        private static float CalculatePetrenkoIndex(string input)
         {
             float index = 0.5f;
             float accumulator = 0;
