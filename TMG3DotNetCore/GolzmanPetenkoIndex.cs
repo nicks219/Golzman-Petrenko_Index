@@ -23,17 +23,7 @@ namespace TMG3DotNetCore
         /// <returns>Dictionary of the identical indices and lines</returns>
         public Dictionary<float, List<string>> GetIdenticalPhrases()
         {
-            var repetitionDict = new Dictionary<float, List<string>>();
-            foreach (var index in IdenticalIndices)
-            {
-                List<string> lines = new();
-                foreach (var line in _generalDict[index])
-                {
-                    lines.Add(line);
-                }
-                repetitionDict.Add(index, lines);
-            }
-            return repetitionDict;
+            return IdenticalIndices.ToDictionary(index => index, index => _generalDict[index].ToList());
         }
 
         private void InitializeAllIndices(Stream stream)
