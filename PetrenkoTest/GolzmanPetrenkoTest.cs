@@ -20,7 +20,7 @@ namespace PetrenkoTest
         {
             GolzmanPetenkoIndex golzmanPetenkoIndex = BuildIndices("test.txt");
 
-            Assert.IsTrue(golzmanPetenkoIndex.IdenticalIndices.Contains(17968.5f));
+            Assert.IsTrue(golzmanPetenkoIndex.GetIdenticalPhrases().ContainsKey(17968.5f));
             Assert.AreEqual(1, golzmanPetenkoIndex.GetIdenticalPhrases().Count);
             Assert.AreEqual("Не выходи из комнаты, не совершай ошибку.", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[0]);
             Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[1]);

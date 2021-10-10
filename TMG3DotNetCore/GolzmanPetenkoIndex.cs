@@ -6,7 +6,7 @@ namespace TMG3DotNetCore
 {
     public class GolzmanPetenkoIndex
     {
-        public HashSet<float> IdenticalIndices { get; private set; }
+        private HashSet<float> _identicalIndices;
         private readonly Dictionary<float, List<string>> _generalDict;
         private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
         private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
@@ -14,7 +14,7 @@ namespace TMG3DotNetCore
         public GolzmanPetenkoIndex(Stream stream)
         {
             _generalDict = CreateAllIndices(stream);
-            IdenticalIndices = CreateIdenticalIndices(_generalDict);
+            _identicalIndices = CreateIdenticalIndices(_generalDict);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace TMG3DotNetCore
         /// <returns>Dictionary of the identical indices and lines</returns>
         public Dictionary<float, List<string>> GetIdenticalPhrases()
         {
-            return IdenticalIndices.ToDictionary(index => index, index => _generalDict[index].ToList());
+            return _identicalIndices.ToDictionary(index => index, index => _generalDict[index].ToList());
         }
 
         private static Dictionary<float, List<string>> CreateAllIndices(Stream stream)
