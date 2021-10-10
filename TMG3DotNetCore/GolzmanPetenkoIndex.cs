@@ -24,9 +24,9 @@ namespace TMG3DotNetCore
         public Dictionary<float, List<string>> GetIdenticalPhrases()
         {
             var repetitionDict = new Dictionary<float, List<string>>();
-            List<string> lines = new();
             foreach (var index in IdenticalIndices)
             {
+                List<string> lines = new();
                 foreach (var line in _generalDict[index])
                 {
                     lines.Add(line);
