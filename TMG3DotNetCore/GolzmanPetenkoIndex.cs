@@ -32,9 +32,8 @@ namespace TMG3DotNetCore
             string line;
             while ((line = streamReader.ReadLine()) != null)
             {
-                float index;
                 string[] res = line.Split('|');
-                index = CalculatePetrenkoIndex(res[0]);
+                float index = CalculatePetrenkoIndex(res[0]);
                 if (res.Length == 2)
                 {
                     //English phrase: adds comment index
