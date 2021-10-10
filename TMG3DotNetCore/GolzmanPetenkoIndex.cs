@@ -4,16 +4,24 @@ using System.Linq;
 
 namespace TMG3DotNetCore
 {
+    public class a
+    {
+        public a()
+        {
+            GolzmanPetenkoIndex r = new GolzmanPetenkoIndex(new MemoryStream(90));
+            r.IdenticalIndices.Add(10f);
+        }
+    }
     public class GolzmanPetenkoIndex
     {
-        public HashSet<float> IdenticalIndices { get; private set; } = new();
-        private readonly Dictionary<float, List<string>> _generalDict = new();
+        public HashSet<float> IdenticalIndices { get; private set; }
+        private readonly Dictionary<float, List<string>> _generalDict;
         private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
         private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
 
         public GolzmanPetenkoIndex(Stream stream)
         {
-            InitializeAllIndices(stream);
+            _generalDict = CreateAllIndices(stream);
             IdenticalIndices = CreateIdenticalIndices();
         }
 
@@ -26,8 +34,9 @@ namespace TMG3DotNetCore
             return IdenticalIndices.ToDictionary(index => index, index => _generalDict[index].ToList());
         }
 
-        private void InitializeAllIndices(Stream stream)
+        private static Dictionary<float, List<string>> CreateAllIndices(Stream stream)
         {
+            Dictionary<float, List<string>> generalDict = new();
             using var streamReader = new StreamReader(stream);
             string line;
             while ((line = streamReader.ReadLine()) != null)
@@ -40,15 +49,16 @@ namespace TMG3DotNetCore
                     index += CalculatePetrenkoIndex(res[1]);
                 }
 
-                if (_generalDict.TryGetValue(index, out var list))
+                if (generalDict.TryGetValue(index, out var list))
                 {
                     list.Add(line);
                 }
                 else
                 {
-                    _generalDict.Add(index, new List<string> { line });
+                    generalDict.Add(index, new List<string> { line });
                 }
             }
+            return generalDict;
         }
 
         private static float CalculatePetrenkoIndex(string input)
