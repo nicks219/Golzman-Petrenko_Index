@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace TMG3DotNetCore
 {
@@ -12,19 +13,16 @@ namespace TMG3DotNetCore
 
         public GolzmanPetenkoIndex(Stream stream)
         {
-            CreateIndices(stream);
+            InitializeIndices(stream);
         }
 
         public HashSet<float> CreateIdenticalIndices()
         {
             _identicalIndices.Clear();
-            foreach (var data in _dict)
-            {
-                if (data.Value.Count > 1)
-                {
-                    _identicalIndices.Add(data.Key);
-                }
-            }
+            _dict.Where(data => data.Value.Count > 1)
+                .Select(data => _identicalIndices
+                .Add(data.Key))
+                .Count();
             return _identicalIndices;
         }
 
@@ -50,7 +48,7 @@ namespace TMG3DotNetCore
             return result;
         }
 
-        private void CreateIndices(Stream stream)
+        private void InitializeIndices(Stream stream)
         {
             using var streamReader = new StreamReader(stream);
             string line;
