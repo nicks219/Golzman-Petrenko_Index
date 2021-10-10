@@ -6,7 +6,7 @@ namespace TMG3DotNetCore
 {
     public class GolzmanPetenkoIndex
     {
-        private HashSet<float> _identicalIndices;
+        private readonly HashSet<float> _identicalIndices;
         private readonly Dictionary<float, List<string>> _generalDict;
         private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
         private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
