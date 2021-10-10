@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.IO;
 using System.Text;
 using TMG3DotNetCore;
+using System.Linq;
 
 namespace PetrenkoTest
 {
@@ -19,17 +20,17 @@ namespace PetrenkoTest
         {
             GolzmanPetenkoIndex golzmanPetenkoIndex = BuildIndices("test.txt");
 
-            Assert.IsTrue(golzmanPetenkoIndex.CreateIdenticalIndices().Contains(17968.5f));
-            Assert.AreEqual(2, golzmanPetenkoIndex.GetIdenticalPhrases().Count);
-            Assert.AreEqual("Не выходи из комнаты, не совершай ошибку.", golzmanPetenkoIndex.GetIdenticalPhrases()[0]);
-            Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases()[1]);
+            Assert.IsTrue(golzmanPetenkoIndex.IdenticalIndices.Contains(17968.5f));
+            Assert.AreEqual(1, golzmanPetenkoIndex.GetIdenticalPhrases().Count);
+            Assert.AreEqual("Не выходи из комнаты, не совершай ошибку.", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[0]);
+            Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[1]);
         }
 
         [Test]
         public void TestUsingMemoryStread()
         {
             GolzmanPetenkoIndex golzmanPetenkoIndex = BuildMemoryStream();
-            Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases()[1]);
+            Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[1]);
         }
 
 

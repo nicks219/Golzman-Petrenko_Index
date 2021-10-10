@@ -6,49 +6,42 @@ namespace TMG3DotNetCore
 {
     public class GolzmanPetenkoIndex
     {
-        private readonly Dictionary<float, List<string>> _dict = new();
-        private readonly HashSet<float> _identicalIndices = new();
+        public HashSet<float> IdenticalIndices { get; private set; } = new();
+        private readonly Dictionary<float, List<string>> _generalDict = new();
         private static readonly HashSet<char> _russian = new("01234567890ячсмитьбюфывапролджэйцукенгшщзхъёЯЧСМИТЬБЮФЫВАПРОЛДЖЭЙЦУКЕНГШЩЗХЪЁ");
         private static readonly HashSet<char> _english = new("0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP");
 
         public GolzmanPetenkoIndex(Stream stream)
         {
-            InitializeIndices(stream);
-        }
-
-        public HashSet<float> CreateIdenticalIndices()
-        {
-            _identicalIndices.Clear();
-            _dict.Where(data => data.Value.Count > 1)
-                .Select(data => _identicalIndices
-                .Add(data.Key))
-                .Count();
-            return _identicalIndices;
+            InitializeAllIndices(stream);
+            CreateIdenticalIndices();
         }
 
         /// <summary>
-        /// Gets a list of lines with the same indices
+        /// Gets a dictionary of lines with the same indices
         /// </summary>
-        /// <returns>List of lines</returns>
-        public List<string> GetIdenticalPhrases()
+        /// <returns>Dictionary of the identical indices and lines</returns>
+        public Dictionary<float, List<string>> GetIdenticalPhrases()
         {
-            if (_identicalIndices.Count == 0)
+            if (IdenticalIndices.Count == 0)
             {
                 CreateIdenticalIndices();
             }
 
-            List<string> result = new();
-            foreach (var index in _identicalIndices)
+            var repetitionDict = new Dictionary<float, List<string>>();
+            List<string> lines = new();
+            foreach (var index in IdenticalIndices)
             {
-                foreach (var line in _dict[index])
+                foreach (var line in _generalDict[index])
                 {
-                    result.Add(line);
+                    lines.Add(line);
                 }
+                repetitionDict.Add(index, lines);
             }
-            return result;
+            return repetitionDict;
         }
 
-        private void InitializeIndices(Stream stream)
+        private void InitializeAllIndices(Stream stream)
         {
             using var streamReader = new StreamReader(stream);
             string line;
@@ -63,13 +56,13 @@ namespace TMG3DotNetCore
                     index += CalculatePetrenkoIndex(res[1]);
                 }
 
-                if (_dict.TryGetValue(index, out var list))
+                if (_generalDict.TryGetValue(index, out var list))
                 {
                     list.Add(line);
                 }
                 else
                 {
-                    _dict.Add(index, new List<string> { line });
+                    _generalDict.Add(index, new List<string> { line });
                 }
             }
         }
@@ -90,6 +83,14 @@ namespace TMG3DotNetCore
             }
             accumulator *= length;
             return accumulator;
+        }
+
+        private void CreateIdenticalIndices()
+        {
+            _generalDict.Where(data => data.Value.Count > 1)
+                .Select(data => IdenticalIndices
+                .Add(data.Key))
+                .Count();
         }
     }
 }
