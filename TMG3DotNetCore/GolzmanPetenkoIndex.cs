@@ -14,7 +14,7 @@ namespace TMG3DotNetCore
         public GolzmanPetenkoIndex(Stream stream)
         {
             _generalDict = CreateAllIndices(stream);
-            IdenticalIndices = CreateIdenticalIndices();
+            IdenticalIndices = CreateIdenticalIndices(_generalDict);
         }
 
         /// <summary>
@@ -71,10 +71,10 @@ namespace TMG3DotNetCore
             return accumulator;
         }
 
-        private HashSet<float> CreateIdenticalIndices()
+        private static HashSet<float> CreateIdenticalIndices(Dictionary<float, List<string>> generalDict)
         {
             return 
-                _generalDict
+                 generalDict
                 .Where(data => data.Value.Count > 1)
                 .Select(data => data.Key)
                 .ToHashSet();
