@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TMG3DotNetCore\TMG3DotNetCore.csproj" />
+    <ProjectReference Include="..\TMG3DotNetCore\PetrenkoIndex.csproj" />
   </ItemGroup>
 
 </Project>

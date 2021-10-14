@@ -1,4 +1,4 @@
-using NUnit.Framework;
+п»їusing NUnit.Framework;
 using System.IO;
 using System.Text;
 using TMG3DotNetCore;
@@ -22,7 +22,7 @@ namespace PetrenkoTest
 
             Assert.IsTrue(golzmanPetenkoIndex.GetIdenticalPhrases().ContainsKey(17968.5f));
             Assert.AreEqual(1, golzmanPetenkoIndex.GetIdenticalPhrases().Count);
-            Assert.AreEqual("Не выходи из комнаты, не совершай ошибку.", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[0]);
+            Assert.AreEqual("РќРµ РІС‹С…РѕРґРё РёР· РєРѕРјРЅР°С‚С‹, РЅРµ СЃРѕРІРµСЂС€Р°Р№ РѕС€РёР±РєСѓ.", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[0]);
             Assert.AreEqual("Load up on guns and bring your friends. It' |    !!!", golzmanPetenkoIndex.GetIdenticalPhrases().FirstOrDefault().Value[1]);
         }
 
@@ -45,7 +45,7 @@ namespace PetrenkoTest
         private static GolzmanPetenkoIndex BuildMemoryStream()
         {
             byte[] firstString = _uniEncoding.GetBytes(
-           "Не выходи из комнаты, не совершай ошибку.\n" +
+           "РќРµ РІС‹С…РѕРґРё РёР· РєРѕРјРЅР°С‚С‹, РЅРµ СЃРѕРІРµСЂС€Р°Р№ РѕС€РёР±РєСѓ.\n" +
            "Load up on guns and bring your friends. It' |    !!!\n" +
            "Hello, how low | Nirvana");
             using Stream stream = new MemoryStream(90);
